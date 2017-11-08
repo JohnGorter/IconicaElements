@@ -38,6 +38,7 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
             step: { type:Number, value:-1, notify:true, reflectToAttribute:true},
             progressballs: { type:Boolean, value:false},
             showfinish: { type:Boolean, value:false},
+            carrousel: { type:Boolean, value:false},
             progresstext: { type:Boolean, value:false},
             progressbar: { type:Boolean, value:false},
             progressbarStyle: { type:String, value:"normal", observer:'_changePBClass'},
@@ -74,7 +75,9 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         this.totalsteps = this.pages.length;
         this.$.content.hidden = false;
         this.step = 0;
-        if (this.previousbutton)    
+        if (this.nextbutton)        
+            this.previousTitle = this.nextbutton.innerText;
+        if (this.previousbutton && !this.carrousel)    
             this.previousbutton.hidden = true;
         this.selectPage('next');
     }
@@ -91,22 +94,33 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
     }
     previousPage(){
         this.step--;
-        if (this.step < 1) this.step = 0;
-        this.previousbutton.hidden = (this.step == 0);
-        this.nextbutton.hidden = (this.step == (this.pages.length-1));
+        if (!this.carrousel) {
+            if (this.step < 1) this.step = 0;
+            this.nextbutton.hidden = (this.step == (this.pages.length-1));
+            this.nextbutton.innerText = this.previousTitle;
+            this.previousbutton.hidden = (this.step == 0);
+        } else {
+            if (this.step < 0) this.step = this.pages.length-1;
+        }
         this.selectPage('previous');
     }
 
     nextPage(){
         if (this.step == (this.pages.length-1)) this.dispatchEvent(new CustomEvent("complete"));
         this.step++; 
-        if (this.step >= this.pages.length) this.step = this.pages.length-1;
-        this.nextbutton.hidden = (this.step == (this.pages.length-1) && !this.showfinish);
-        if (this.showfinish && this.step == (this.pages.length-1)) {
-            this.previousTitle = this.nextbutton.innerText;
-            this.nextbutton.innerText = this.step == (this.pages.length-1) ? 'Finish' : this.previousTitle;
+        if (!this.carrousel) {
+            if (this.step >= this.pages.length) this.step = this.pages.length-1;
+            this.nextbutton.hidden = (this.step == (this.pages.length-1) && !this.showfinish);
+            if (this.showfinish && this.step == (this.pages.length-1)) {
+                this.nextbutton.innerText = this.step == (this.pages.length-1) ? 'Finish' : this.previousTitle;
+            } else {
+                this.nextbutton.innerText = this.previousTitle;
+            }
+            this.previousbutton.hidden = (this.step == 0);
+           
+        } else {
+            this.step = this.step % this.pages.length;
         }
-        this.previousbutton.hidden = (this.step == 0);
         this.selectPage('next');
     }
 
