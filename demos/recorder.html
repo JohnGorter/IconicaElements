@@ -1,0 +1,20 @@
+<html>
+    <head></head>
+    <body>
+        <div style="width:450px;height:340px">
+            <ico-recorder id="r" recordingtime="10" counter="5"></ico-recorder>
+        </div>
+
+        output:
+        <video id="v" width="100" height="100" controls autoplay></video>
+          
+        <script type="module" src="../ico-recorder.js"></script>
+        <script>
+            var recorder = document.querySelector("#r");
+            recorder.addEventListener("recording-complete", () => {
+                document.querySelector("#v").src = recorder.video;
+
+            });
+        </script>
+    </body>
+</html>

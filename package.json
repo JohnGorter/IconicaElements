@@ -19,6 +19,7 @@
   "homepage": "https://github.com/JohnGorter/IconicaElements#readme",
   "dependencies": {
     "@polymer/paper-progress": "next",
+    "@polymer/paper-button": "next",
     "@polymer/polymer": "next"
   }
 }
