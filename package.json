@@ -1,0 +1,24 @@
+{
+  "name": "@iconica/iconicaelements",
+  "version": "1.0.0",
+  "description": "Iconica Core Elements",
+  "flat": true,
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnGorter/IconicaElements.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JohnGorter/IconicaElements/issues"
+  },
+  "homepage": "https://github.com/JohnGorter/IconicaElements#readme",
+  "dependencies": {
+    "@polymer/paper-progress": "next",
+    "@polymer/polymer": "next"
+  }
+}
