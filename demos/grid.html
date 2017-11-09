@@ -8,13 +8,19 @@
             </style>
 
             <div class="example1">
-                <ico-grid row></ico-grid>
+                <ico-grid row  items='[{"name":"first cat","src":"http://www.petmd.com/sites/default/files/scared-kitten-shutterstock_191443322.jpg"}, {"name":"second cat","src":"https://media.mnn.com/assets/images/2016/11/cat-with-big-eyes-gimo.jpg.653x0_q80_crop-smart.jpg"}]'>
+                       <div><img height="100" src="${item.src}"/><p>${item.name}</p></div>
+                </ico-grid>
             </div>
             <div  class="example2">
-                <ico-grid grid zoomselection></ico-grid>
+                <ico-grid grid zoomselection items='[{"name":"first cat","src":"http://www.petmd.com/sites/default/files/scared-kitten-shutterstock_191443322.jpg"}, {"name":"second cat","src":"https://media.mnn.com/assets/images/2016/11/cat-with-big-eyes-gimo.jpg.653x0_q80_crop-smart.jpg"}]' as="book">
+                        <div><img height="100" src="${item.src}"/><p>${item.name}</p></div>
+                </ico-grid>
             </div>
             <div class="example3">
-                <ico-grid flex zoomselection></ico-grid>
+                <ico-grid flex zoomselection items='[{"name":"first cat","src":"http://www.petmd.com/sites/default/files/scared-kitten-shutterstock_191443322.jpg"}, {"name":"second cat","src":"https://media.mnn.com/assets/images/2016/11/cat-with-big-eyes-gimo.jpg.653x0_q80_crop-smart.jpg"}, {"name":"second cat","src":"https://media.mnn.com/assets/images/2016/11/cat-with-big-eyes-gimo.jpg.653x0_q80_crop-smart.jpg"}, {"name":"second cat","src":"https://media.mnn.com/assets/images/2016/11/cat-with-big-eyes-gimo.jpg.653x0_q80_crop-smart.jpg"}, {"name":"second cat","src":"https://media.mnn.com/assets/images/2016/11/cat-with-big-eyes-gimo.jpg.653x0_q80_crop-smart.jpg"},{"name":"third cat","src":"https://4.bp.blogspot.com/-U1ZNMr9KVVg/VtSElBv--XI/AAAAAAAA7Ig/yjTEHqzZZUY/s1600/big-cute-eyes-cat-black-scottish-fold-gimo-1room1cat.jpeg"},{"name":"third cat","src":"https://4.bp.blogspot.com/-U1ZNMr9KVVg/VtSElBv--XI/AAAAAAAA7Ig/yjTEHqzZZUY/s1600/big-cute-eyes-cat-black-scottish-fold-gimo-1room1cat.jpeg"},{"name":"third cat","src":"https://4.bp.blogspot.com/-U1ZNMr9KVVg/VtSElBv--XI/AAAAAAAA7Ig/yjTEHqzZZUY/s1600/big-cute-eyes-cat-black-scottish-fold-gimo-1room1cat.jpeg"},{"name":"third cat","src":"https://4.bp.blogspot.com/-U1ZNMr9KVVg/VtSElBv--XI/AAAAAAAA7Ig/yjTEHqzZZUY/s1600/big-cute-eyes-cat-black-scottish-fold-gimo-1room1cat.jpeg"},{"name":"fourth cat", "src":"http://sites.psu.edu/siowfa15/wp-content/uploads/sites/29639/2015/10/cat.jpg"}]'>
+                        <div><img height="100" src="${item.src}"/><p>${item.name}</p></div>
+                </ico-grid>
             </div>
 
         <script type="module" src="../ico-grid.js"></script>

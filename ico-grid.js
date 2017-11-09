@@ -11,10 +11,10 @@ var template = `
          .containerright {flex:1;display: grid;grid-template-columns: 25% 25% 50%; grid-template-rows: auto; grid-template-areas: "second third main"  "fourth fifth main";}
          .containermiddle {flex:1;display: grid;grid-template-columns: 25% 50% 25%; grid-template-rows: auto; grid-template-areas: "second main third"  "fourth main fifth";}
         
-        .item-row { flex:1;min-width:100vw;height:50px;background-color:coral;margin:5px;transition:all 0.2s;}
+        .item-row { flex:1;min-width:100vw;min-height:50px;background-color:coral;margin:5px;transition:all 0.2s;}
         .item-row[focus] { z-index:10; outline: 5px solid #71d1a4; background-color:#71d1a4;}
 
-        .item-n { width:50px;height:50px;background-color:coral;margin:5px;}
+        .item-n { min-width:50px;min-height:50px;background-color:coral;margin:5px;}
         .item-b { grid-area: main; background-color:lime;}
         .item-c { grid-area: second; background-color:coral;}
         .item-d { grid-area: third; background-color:navy;}
@@ -23,30 +23,40 @@ var template = `
         .item   { min-width:50px;min-height:50px;margin:5px;transition:all 0.2s;}
         .item[focus] { z-index:10; outline: 5px solid #71d1a4; background-color:#71d1a4;}
 
-        .zoom { position:absolute;left:0px;top:0px;z-index:10;width:100vw;height:100vh;}
+        .zoom { position:absolute;left:0px;top:0px;z-index:10;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
     </style>
         <div id="containerflex" class="gridcontainern">
             <template is="dom-repeat" items="{{_getRows(items.*)}}" as="row">
                 <div class$="{{_getRandomLayout(row)}}">
                     <template is="dom-repeat" items="{{_getItemsForRow(row, items.*)}}">
-                        <div class$="{{_getClassForIndex(index)}}" on-tap="_select" focus$="{{_focus(row, index, selected)}}"> {{row}} {{item}} </div>
+                        <div class$="{{_getClassForIndex(index)}}" on-tap="_select" focus$="{{_focus(row, index, selected)}}"><ico-html html="{{_instTemplate(item)}}"></ico-html> </div> </div>
                     </template>
                 </div>
             </template>
         </div>
         <div id="container" class="gridcontainer">
                 <template is="dom-repeat" items="{{items}}">
-                    <div class$="{{_getClassForIndex(index)}}" focus$="{{_focus(0, index, selected)}}" on-tap="_select"> {{item}} </div>
+                    <div class$="{{_getClassForIndex(index)}}" focus$="{{_focus(0, index, selected)}}" on-tap="_select">  <ico-html html="{{_instTemplate(item)}}"></ico-html> </div></div>
                 </template>
         </div>
         <div id="containerrow" class="rowcontainer">
             <template is="dom-repeat" items="{{items}}">
-              <div class$="{{_getClassForIndex(index)}}" focus$="{{_focus(0, index, selected)}}" on-tap="_select"> {{item}} </div>
+              <div class$="{{_getClassForIndex(index)}}" focus$="{{_focus(0, index, selected)}}" on-tap="_select"> 
+                <ico-html html="{{_instTemplate(item)}}"></ico-html>
+               </div>
             </template>
         </div>
 </div>
     </iron-pages>
 `;
+
+export class IcoHTML extends PolymerElement {
+    static get properties (){
+        return { html: { type:String, observer:'_htmlChanged'}}
+    }
+    _htmlChanged(){ this.innerHTML = this.html; }
+}
+customElements.define('ico-html', IcoHTML);
 
 export class IcoGrid extends GestureEventListeners(PolymerElement) {
     static get template(){ return template; }
@@ -54,10 +64,24 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
             flex: { type:Boolean, value:false, observer:'_layoutChange' },
             grid: { type:Boolean, value:false, observer:'_layoutChange' },
             row: { type:Boolean, value:false, observer:'_layoutChange' },
-            items: { type:Array, value:['a','b','c','d','e','f','g','h','i','j','k','l','m','n'], observer:'_itemsChanged' },
+            items: { type:Array, value:[]},
             selected: { type:Number, value:0, notify:true},
-            zoomselection: { type:Boolean, value:false, notify:true}
+            zoomselection: { type:Boolean, value:false, notify:true},
+            template: { type:String, value:"", observer:'_layoutChange'},
+            as: { type:String, value:"item", observer:'_layoutChange'}
     }}
+
+    connectedCallback(){
+        super.connectedCallback();
+        if (this.children.length > 0)
+            this.template = this.children[0].outerHTML;
+    }
+
+    _instTemplate(item){
+        var template = "(function(){ var " + this.as + " = " + JSON.stringify(item) + ";var template = " + "`" + this.template + "`;return template;})();";
+        template = template.replace(/"/g, "\"");
+        var result = eval(template); return result;
+    }
 
     addItem(item){
         this.push('items',item);
@@ -70,10 +94,10 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
     _select(e){  
         this.selected = this.items.indexOf(e.model.item); 
         if (this.zoomselection){
-            if (e.target.className.indexOf("zoom") < 0)
-                e.target.classList.add("zoom");
+            if (e.currentTarget.className.indexOf("zoom") < 0)
+                e.currentTarget.classList.add("zoom");
             else
-                e.target.classList.remove("zoom");
+                e.currentTarget.classList.remove("zoom");
         }
     }
 
@@ -99,7 +123,6 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
         return  ["containermiddle", "containerleft", "containerright"][rnd];
 
     }
-    _itemsChanged(){}
     _layoutChange(){
         this.$.container.style.display = this.grid ? "flex":"none";
         this.$.containerflex.style.display = this.flex ? "grid":"none";
