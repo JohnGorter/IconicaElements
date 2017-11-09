@@ -5,7 +5,7 @@ import '/node_modules/@polymer/paper-progress/paper-progress.js'
 
 const template = `
     <style>
-        #content { z-index:10;}
+        #content { z-index:10;touch-action:pan-right;background-color:black;width:100vw;}
         #toolbarcontainer { z-index:30;}
         #progressballs { min-height:20px;background-color:black;display:flex;justify-items:center;justify-content:center;align-items:center;}
         .ball { width:8px;height:8px;margin:2px;border-radius:50%;background-color:silver;transition:all 0.3s ease-in-out}
@@ -41,14 +41,34 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
             carrousel: { type:Boolean, value:false},
             progresstext: { type:Boolean, value:false},
             progressbar: { type:Boolean, value:false},
+            swipeable: { type:Boolean, value:false},
             progressbarStyle: { type:String, value:"normal", observer:'_changePBClass'},
         };
     }
     static get template() {
         return template;
     }
+
+    debounce(f, t){
+        if (!this.inprogress){
+            this.inprogress = true;
+            f();
+            setTimeout(() => { this.inprogress = false;}, t); 
+        }
+    }
+
     connectedCallback(){
         super.connectedCallback();
+
+        if (this.swipeable){
+            // listen for swipes
+            this.addEventListener("pointermove", (e) => {
+            console.log("m", e.movementX);
+                if (e.movementX > 20) this.debounce(() => { this.previousPage()}, 500);
+                if (e.movementX < -20) this.debounce(() => { this.nextPage()}, 500);
+            });
+          
+        }
         var tb = this.$.toolbar.assignedNodes()[0];
         if (tb) {
             this.nextbutton = tb.querySelector("*[nextpage]");
@@ -64,6 +84,7 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         this.pages = Array();
         for(let i = 0; i < this.children.length; i++){
             if (this.children[i].assignedSlot.name == ""){
+                this.children[i].classList.add("page");
                 this.children[i].hidden = true;
                 this.pages.push(this.children[i]);
             }
