@@ -1,0 +1,60 @@
+<html>
+    <head> <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"></head>
+    <style>
+        html, body {
+            touch-action: none;
+        overflow-x: hidden;
+        }
+        body {
+        position: relative
+        }
+    </style>
+    <body style="margin:0px;">
+       
+        <my-app></my-app>
+
+        <script type="module">
+        import '/node_modules/@polymer/polymer/polymer.js';
+        import '/ico-slideup.js';
+        import { Element } from '/node_modules/@polymer/polymer/polymer-element.js';
+
+        const htmlTemplate = `
+            <style is="custom-style">
+                ico-slideup { height:98vh;background-color:yellow}
+                :host { 
+                    --header-tall-mixin: {
+                        background-color:none;
+                     height:252px;
+                     color:red;
+                    };
+                    --header-mixin: {
+                        background-color:red;
+                     height:52px;
+                     color:navy;
+                    };
+                    --headerbg-mixin: {
+                        background-image:url('/demos/img/cat.jpg');
+                    };
+                    --headerbg-tall-mixin: {
+                        background-image:url('/demos/img/cat.jpg');
+                    };
+                }
+                </style>
+                <ico-slideup>
+                    <div style="margin-top:200px;margin-left:100px;margin-right:100px;">Here is a simple page with some content about cats <br/></br><p><img src="/demos/img/up.png"/></p> </div>
+                    <div slot="slideupheader" style="background-color:none;margin-left:25px;">More details about my cat here! </div>
+                    <div slot="slideup" style="background-color:silver;height:100%">My cat is my sweetest pussy</div>
+                </ico-slideup>
+        `;
+        export class MyApp extends Element{
+            static get template(){
+                return htmlTemplate;
+            }
+        }
+        customElements.define('my-app', MyApp);
+        </script>
+
+       
+         
+    </body>
+</html>
