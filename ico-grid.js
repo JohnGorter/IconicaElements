@@ -93,6 +93,7 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
 
     _select(e){  
         this.selected = this.items.indexOf(e.model.item); 
+        this.dispatchEvent(new CustomEvent("item-selected", { detail:e.model.item }));
         if (this.zoomselection){
             if (e.currentTarget.className.indexOf("zoom") < 0)
                 e.currentTarget.classList.add("zoom");
