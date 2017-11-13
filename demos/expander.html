@@ -1,0 +1,41 @@
+<html>
+    <head> <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"></head>
+    <style>
+        html, body {
+            touch-action: none;
+        overflow-x: hidden;
+        }
+        body {
+        position: relative
+        }
+    </style>
+    <body style="margin:0px;">
+       
+        <my-app></my-app>
+
+        <script type="module">
+        import '/node_modules/@polymer/polymer/polymer.js';
+        import '../ico-expander.js'; 
+        import { Element } from '/node_modules/@polymer/polymer/polymer-element.js';
+
+        const htmlTemplate = `
+                 <style is="custom-style">
+               
+                </style>
+                <ico-expander>
+                   <div slot="header">Custom Event</div>
+                   <div slot="content">content here</div>
+                </ico-expander>
+        `;
+        export class MyApp extends Element{
+            static get template(){
+                return htmlTemplate;
+            }
+        }
+        customElements.define('my-app', MyApp);
+        </script>
+
+       
+         
+    </body>
+</html>

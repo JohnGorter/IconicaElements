@@ -4,6 +4,7 @@ import { Element as PolymerElement } from '/node_modules/@polymer/polymer/polyme
 
 var template = `
     <style>
+         #maincontainer { position:relative;height:400px;overflow:scroll;}
          .gridcontainern { display:flex;flex-flow:wrap;padding:5px;}
          .gridcontainer { position:absolute;display:flex;flex-direction:row;flex-wrap:wrap;}
          .rowcontainer { position:absolute;display:flex;flex-direction:row;flex-wrap:wrap;width:100vw;border:1px solid black;}
@@ -25,6 +26,7 @@ var template = `
 
         .zoom { position:absolute;left:0px;top:0px;z-index:10;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
     </style>
+    <div id="maincontainer">
         <div id="containerflex" class="gridcontainern">
             <template is="dom-repeat" items="{{_getRows(items.*)}}" as="row">
                 <div class$="{{_getRandomLayout(row)}}">
@@ -46,8 +48,7 @@ var template = `
                </div>
             </template>
         </div>
-</div>
-    </iron-pages>
+    </div>
 `;
 
 export class IcoHTML extends PolymerElement {
@@ -66,6 +67,7 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
             row: { type:Boolean, value:false, observer:'_layoutChange' },
             items: { type:Array, value:[]},
             selected: { type:Number, value:0, notify:true},
+            selectedObject: { type:Object, value:{}, notify:true},
             zoomselection: { type:Boolean, value:false, notify:true},
             template: { type:String, value:"", observer:'_layoutChange'},
             as: { type:String, value:"item", observer:'_layoutChange'}
@@ -75,11 +77,14 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
         super.connectedCallback();
         if (this.children.length > 0)
             this.template = this.children[0].outerHTML;
+        if (!this.row && !this.grid && !this.flex) this.row = true;
     }
 
     _instTemplate(item){
         var template = "(function(){ var " + this.as + " = " + JSON.stringify(item) + ";var template = " + "`" + this.template + "`;return template;})();";
         template = template.replace(/"/g, "\"");
+        template = template.replace(/{_{/g, "${");
+        template = template.replace(/}_}/g, "}");
         var result = eval(template); return result;
     }
 
@@ -93,6 +98,7 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
 
     _select(e){  
         this.selected = this.items.indexOf(e.model.item); 
+        this.selectedObject = e.model.item; 
         this.dispatchEvent(new CustomEvent("item-selected", { detail:e.model.item }));
         if (this.zoomselection){
             if (e.currentTarget.className.indexOf("zoom") < 0)

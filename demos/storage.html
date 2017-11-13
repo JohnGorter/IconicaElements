@@ -1,0 +1,52 @@
+<html>
+    <head>
+            <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>
+    </head>
+    <body>
+        <my-app>
+            Loading..
+        </my-app>
+
+
+        <script type="module">
+        import '/node_modules/@polymer/polymer/polymer.js'
+        import { Element } from '/node_modules/@polymer/polymer/polymer-element.js'
+        import { GestureEventListeners } from '/node_modules/@polymer/polymer/lib/mixins/gesture-event-listeners.js'
+
+        const htmlTemplate = `
+            <ico-grid items="{{data}}" selected-object="{{doc}}">
+                <div>{_{item.name}_}</div>    
+            </ico-grid>
+            <ico-storage auth-domain="rep-app-dcb15.firebaseapp.com" database-URL="https://rep-app-dcb15.firebaseio.com" project-id="rep-app-dcb15" storage-bucket="rep-app-dcb15.appspot.com" messaging-sender-id="991032175500"></ico-storage>
+            <ico-query id="query" path="/bla" data="{{data}}"></ico-query>
+            <ico-document id="document" path="/bla" docid="{{docid}}" data="{{doc}}"></ico-document>
+            <button on-tap="add">Add new value</button>
+
+            <hr/>
+            <div> {{ doc.name }} </div>
+            <input type="text" name="name" value="{{doc.name::change}}">
+        `;
+
+        export class MyApp extends GestureEventListeners(Element) {
+            static get template() { return htmlTemplate; }
+            add(){
+                this.$.query.ref.push({name:"newval"});
+            }
+            select(e){
+                console.log('sslected', e.model.item._id);
+                this.docid = e.model.item._id;
+            }
+
+        }
+
+        customElements.define('my-app', MyApp);
+        </script>
+        
+
+        <script type="module" src="../ico-storage.js"></script>
+        <script type="module" src="../ico-query.js"></script>
+        <script type="module" src="../ico-document.js"></script>
+        <script type="module" src="../ico-grid.js"></script>
+    </body>
+</html>
