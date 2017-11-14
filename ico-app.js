@@ -4,10 +4,11 @@ import { Element } from  '/node_modules/@polymer/polymer/polymer-element.js'
  const htmlTemplate = `
  `
 
- export class IcoStorage extends Element {
+ export class IcoApp extends Element {
     static get template() { return htmlTemplate; }
     static get properties () {
         return {
+            apiKey : { type:String },
             authDomain : { type:String },
             databaseURL : { type:String },
             projectId : { type:String },
@@ -18,6 +19,7 @@ import { Element } from  '/node_modules/@polymer/polymer/polymer-element.js'
     connectedCallback(){
         super.connectedCallback(); 
         firebase.initializeApp({
+            apiKey: this.apiKey,
             authDomain: this.authDomain,
             databaseURL: this.databaseURL,
             projectId: this.projectId,
@@ -27,4 +29,4 @@ import { Element } from  '/node_modules/@polymer/polymer/polymer-element.js'
     }
 }
 
-customElements.define('ico-storage', IcoStorage);
+customElements.define('ico-app', IcoApp);

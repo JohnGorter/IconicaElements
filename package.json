@@ -1,6 +1,6 @@
 {
   "name": "@iconica/iconicaelements",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Iconica Core Elements",
   "flat": true,
   "main": "index.js",

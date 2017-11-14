@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+    <body>
+    <my-app></my-app>
+    <script type="module" src="../ico-app.js"></script>
+    <script type="module" src="../ico-authentication.js"></script>
+    <script type="module">
+        import '/node_modules/@polymer/polymer/polymer.js'
+        import { Element } from '/node_modules/@polymer/polymer/polymer-element.js'
+
+        const htmlTemplate = `
+            <h1>Register a new user</h1>
+            Email: <input type="text" name="email" value="{{email::change}}">
+            Password: <input type="password" name="password"  value="{{password::change}}">
+            <button on-click="signup">sign up</button>
+            <!-- <button on-click="signin">sign in</button> -->
+
+            {{ _toJSON(user) }}
+            {{outcome}}
+           
+            <ico-app api-key="AIzaSyAIrU1xKfGnsX2Pa40idv-9uGLnomiMyp4" auth-domain="rep-app-dcb15.firebaseapp.com" database-URL="https://rep-app-dcb15.firebaseio.com" project-id="rep-app-dcb15" storage-bucket="rep-app-dcb15.appspot.com" messaging-sender-id="991032175500"></ico-app>
+            <ico-auth id="auth" user="{{user}}"></ico-auth>
+        `
+        export class MyApp extends Element{
+            static get template(){
+                return htmlTemplate;
+            }
+
+            _toJSON(user){
+                return JSON.stringify(user);
+            }
+            signup(){
+                this.$.auth.signUp(this.email, this.password).then(() =>{
+                    console.log('success');
+                    this.outcome = "success!";
+
+                }); 
+            }
+            signin() {
+                this.$.auth.signInWithEmail(this.email, this.password).then(() =>{
+                    console.log('success');
+
+                }); 
+            }
+
+          
+        }
+
+
+        customElements.define('my-app', MyApp);
+    </script>
+    </body>
+</html>

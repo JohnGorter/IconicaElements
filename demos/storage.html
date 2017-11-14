@@ -18,7 +18,7 @@
             <ico-grid items="{{data}}" selected-object="{{doc}}">
                 <div>{_{item.name}_}</div>    
             </ico-grid>
-            <ico-storage auth-domain="rep-app-dcb15.firebaseapp.com" database-URL="https://rep-app-dcb15.firebaseio.com" project-id="rep-app-dcb15" storage-bucket="rep-app-dcb15.appspot.com" messaging-sender-id="991032175500"></ico-storage>
+            <ico-app auth-domain="rep-app-dcb15.firebaseapp.com" database-URL="https://rep-app-dcb15.firebaseio.com" project-id="rep-app-dcb15" storage-bucket="rep-app-dcb15.appspot.com" messaging-sender-id="991032175500"></ico-app>
             <ico-query id="query" path="/bla" data="{{data}}"></ico-query>
             <ico-document id="document" path="/bla" docid="{{docid}}" data="{{doc}}"></ico-document>
             <button on-tap="add">Add new value</button>
@@ -44,7 +44,7 @@
         </script>
         
 
-        <script type="module" src="../ico-storage.js"></script>
+        <script type="module" src="../ico-app.js"></script>
         <script type="module" src="../ico-query.js"></script>
         <script type="module" src="../ico-document.js"></script>
         <script type="module" src="../ico-grid.js"></script>

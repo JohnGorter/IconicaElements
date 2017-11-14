@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+    <body>
+            
+    <my-app>
+            <div style="height:200px;width:200px;" id="recaptcha-container"></div>
+    </my-app>
+    <script type="module" src="../ico-app.js"></script>
+    <script type="module" src="../ico-authentication.js"></script>
+    <script type="module">
+        import '/node_modules/@polymer/polymer/polymer.js'
+        import { Element } from '/node_modules/@polymer/polymer/polymer-element.js'
+
+        const htmlTemplate = `
+            <h1>Authentication elements</h1>
+
+            <p>Log in anonymously</p>
+            <button on-click="signinAnonymously">log in anonymously</button><br/>
+
+            <p>Log in using your gmail account </p>
+            <button on-click="signInWithGooglePopup">log in with google</button><br/>
+
+            <p> Log in using email and password, register your account <a href="./register.html">here</a> </p>
+            Email: <input type="text" name="email" value="{{email::change}}">
+            Password: <input type="password" name="password"  value="{{password::change}}">
+            <button on-click="signInWithEmail">log in with email</button>
+
+            <hr>
+            User {{_toJSON(user)}}
+           
+            <ico-app api-key="AIzaSyAIrU1xKfGnsX2Pa40idv-9uGLnomiMyp4" auth-domain="rep-app-dcb15.firebaseapp.com" database-URL="https://rep-app-dcb15.firebaseio.com" project-id="rep-app-dcb15" storage-bucket="rep-app-dcb15.appspot.com" messaging-sender-id="991032175500"></ico-app>
+            <ico-auth id="auth" user="{{user}}"></ico-auth>
+        `
+        export class MyApp extends Element{
+            static get template(){
+                return htmlTemplate;
+            }
+
+            _toJSON(user){
+                return JSON.stringify(user);
+            }
+            signinAnonymously(){
+                this.$.auth.signInAnonymously();
+            }
+
+            signInWithGooglePopup(){
+                this.$.auth.signInWithGooglePopup();
+            }
+            signInWithEmail(){
+                this.$.auth.signInWithEmail(this.email, this.password);
+            }
+        }
+
+
+        customElements.define('my-app', MyApp);
+    </script>
+    </body>
+</html>
