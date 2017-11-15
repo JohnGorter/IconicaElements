@@ -27,6 +27,7 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
     static get properties() {
         return {
             video: { type:Object, notify:true },
+            videoblob: { type:String, value:"", notify:true },
             counter: { type:Number, value:3},
             duration: { type:String, value:''},
             recordingtime: { type:Number, value:7, notify:true},
@@ -117,6 +118,10 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
                 this.dispatchEvent(new CustomEvent("recording-complete"));
                 this.playing = false;
                 this.duration = "";
+
+                fetch(this.video)
+                .then(res => res.blob())
+                .then(blob => this.videoblob = blob);
             }
         }
         mediaRecorder.start((this.recordingtime + 1) * 1000);

@@ -63,7 +63,6 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         if (this.swipeable){
             // listen for swipes
             this.addEventListener("pointermove", (e) => {
-            console.log("m", e.movementX);
                 if (e.movementX > 20) this.debounce(() => { this.previousPage()}, 500);
                 if (e.movementX < -20) this.debounce(() => { this.nextPage()}, 500);
             });

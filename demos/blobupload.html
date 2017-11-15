@@ -1,0 +1,78 @@
+<html>
+    <head>
+            <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-storage.js"></script>
+    </head>
+    <body>
+        <my-app>
+            Loading..
+        </my-app>
+
+
+        <script type="module">
+        import '/node_modules/@polymer/polymer/polymer.js'
+        import { Element } from '/node_modules/@polymer/polymer/polymer-element.js'
+        import { GestureEventListeners } from '/node_modules/@polymer/polymer/lib/mixins/gesture-event-listeners.js'
+
+        const htmlTemplate = `
+            Choose a file 
+            <div style="height:300px">
+                <ico-recorder videoblob="{{video}}"></ico-recorder>
+            </div>
+           
+            <ico-grid flex zoomselection items="{{files}}">
+                <div style="display:flex;align-items:center;justify-content:center;"><video controls height="200"><source src="{_{item.file}_}" type="video/webm" /></video></div>    
+            </ico-grid>
+        
+            this is the video {{video}} <hr/>
+            <button on-click="_getData">get Data</button>
+            <button on-click="signin">sign in</button>
+            <button on-click="signout">sign out</button>
+            {{ _toJSON(user) }}
+            <ico-auth id="auth" anonymous user="{{user}}"></ico-auth>
+
+            <ico-app api-key="AIzaSyAIrU1xKfGnsX2Pa40idv-9uGLnomiMyp4" auth-domain="rep-app-dcb15.firebaseapp.com" database-URL="https://rep-app-dcb15.firebaseio.com" project-id="rep-app-dcb15" storage-bucket="rep-app-dcb15.appspot.com" messaging-sender-id="991032175500"></ico-app>
+            <ico-storage-item id="item" ref="videos/{{filename}}" data="{{video}}" on-fileuploaded="addVideo" url="{{url}}"></ico-storage-item>
+        `;
+
+        export class MyApp extends GestureEventListeners(Element) {
+            static get template() { return htmlTemplate; }
+            static get properties() {
+                return {
+                    files: { type:Array, value:[], notify:true},
+                    filename: { type:String, value:"recording"}              
+                }
+            }
+
+          
+            _toJSON() {
+                return JSON.stringify(this.user);
+            }
+            signout(){
+                this.$.auth.signout();
+            }
+            signin(){
+                this.$.auth.signInAnonymously();
+            }
+            constructor(){
+                super();
+                this.i = 1;
+            }
+
+            addVideo(){
+                this.push('files', {file:this.url});
+                this.filename = "recording" + this.i++;
+            }
+        }
+
+        customElements.define('my-app', MyApp);
+        </script>
+        
+
+        <script type="module" src="../ico-app.js"></script>
+        <script type="module" src="../ico-authentication.js"></script>
+        <script type="module" src="../ico-storage-item.js"></script>
+        <script type="module" src="../ico-grid.js"></script>
+        <script type="module" src="../ico-recorder.js"></script>
+    </body>
+</html>

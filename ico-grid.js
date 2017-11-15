@@ -4,7 +4,7 @@ import { Element as PolymerElement } from '/node_modules/@polymer/polymer/polyme
 
 var template = `
     <style>
-         #maincontainer { position:relative;height:400px;overflow:scroll;}
+         #nmaincontainer { position:relative;min-height:400px;overflow:scroll;}
          .gridcontainern { display:flex;flex-flow:wrap;padding:5px;}
          .gridcontainer { position:absolute;display:flex;flex-direction:row;flex-wrap:wrap;}
          .rowcontainer { position:absolute;display:flex;flex-direction:row;flex-wrap:wrap;width:100vw;border:1px solid black;}
@@ -15,15 +15,15 @@ var template = `
         .item-row { flex:1;min-width:100vw;min-height:50px;background-color:coral;margin:5px;transition:all 0.2s;}
         .item-row[focus] { z-index:10; outline: 5px solid #71d1a4; background-color:#71d1a4;}
 
+        div { }
         .item-n { min-width:50px;min-height:50px;background-color:coral;margin:5px;}
-        .item-b { grid-area: main; background-color:lime;}
-        .item-c { grid-area: second; background-color:coral;}
-        .item-d { grid-area: third; background-color:navy;}
-        .item-e { grid-area: fourth; background-color:red;}
-        .item-f { grid-area: fifth; background-color:yellow;}
-        .item   { min-width:50px;min-height:50px;margin:5px;transition:all 0.2s;}
-        .item[focus] { z-index:10; outline: 5px solid #71d1a4; background-color:#71d1a4;}
-
+        .item-b { grid-area: main;}
+        .item-c { grid-area: second;}
+        .item-d { grid-area: third;}
+        .item-e { grid-area: fourth;}
+        .item-f { grid-area: fifth;}
+        .item   {transition:all 0.2s ease-in-out; background-color:red;min-width:50px;min-height:50px;margin:5px;}
+        .item[focus] {z-index:10; outline: 5px solid #71d1a4; background-color:#71d1a4;}
         .zoom { position:absolute;left:0px;top:0px;z-index:10;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
     </style>
     <div id="maincontainer">
@@ -60,6 +60,7 @@ export class IcoHTML extends PolymerElement {
 customElements.define('ico-html', IcoHTML);
 
 export class IcoGrid extends GestureEventListeners(PolymerElement) {
+    static get observers() { return ['_renderGrid(items.*)'];}
     static get template(){ return template; }
     static get properties(){ return {
             flex: { type:Boolean, value:false, observer:'_layoutChange' },
@@ -85,7 +86,9 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
         template = template.replace(/"/g, "\"");
         template = template.replace(/{_{/g, "${");
         template = template.replace(/}_}/g, "}");
-        var result = eval(template); return result;
+        var result = eval(template); 
+        console.log("result", result);
+        return result;
     }
 
     addItem(item){
@@ -130,15 +133,15 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
         return  ["containermiddle", "containerleft", "containerright"][rnd];
 
     }
+    _renderGrid(){
+      //  this._layoutChange();
+      console.log("items", this.items);
+    }
+
     _layoutChange(){
         this.$.container.style.display = this.grid ? "flex":"none";
         this.$.containerflex.style.display = this.flex ? "grid":"none";
         this.$.containerrow.style.display = this.row ? "flex":"none";
-        var cacheditems = this.items.slice(0); 
-       // this.items = [];
-        setTimeout(() => {
-            this.items = cacheditems.slice(0);
-        }, 10);
     }
 }
 

@@ -36,6 +36,11 @@ export class IcoAuthentication extends Element {
         });
     }
 
+    signout() {
+        firebase.auth().signOut().then(() => {
+            this.user = {};
+        });
+    } 
     signInAnonymously(){
         firebase.auth().signInAnonymously().then((user) => {
             this.user = user;

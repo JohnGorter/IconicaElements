@@ -1,0 +1,71 @@
+<html>
+    <head>
+            <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-storage.js"></script>
+    </head>
+    <body>
+        <my-app>
+            Loading..
+        </my-app>
+
+
+        <script type="module">
+        import '/node_modules/@polymer/polymer/polymer.js'
+        import { Element } from '/node_modules/@polymer/polymer/polymer-element.js'
+        import { GestureEventListeners } from '/node_modules/@polymer/polymer/lib/mixins/gesture-event-listeners.js'
+
+        const htmlTemplate = `
+            Choose a file <input id="uploader" type="file" on-change="upload">
+           
+            <ico-grid flex zoomselection items="{{files}}">
+                <div style="display:flex;align-items:center;justify-content:center;"><img height="100" src="{_{item.file}_}"/></div>    
+            </ico-grid>
+        
+            <button on-click="signin">sign in</button>
+            <button on-click="signout">sign out</button>
+            {{ _toJSON(user) }}
+            <ico-auth id="auth" anonymous user="{{user}}"></ico-auth>
+
+            <ico-app api-key="AIzaSyAIrU1xKfGnsX2Pa40idv-9uGLnomiMyp4" auth-domain="rep-app-dcb15.firebaseapp.com" database-URL="https://rep-app-dcb15.firebaseio.com" project-id="rep-app-dcb15" storage-bucket="rep-app-dcb15.appspot.com" messaging-sender-id="991032175500"></ico-app>
+            <ico-storage-item id="item" ref="images/{{name}}" data="{{file}}" on-fileuploaded="addFile" url="{{url}}"></ico-storage-item>
+        `;
+
+        export class MyApp extends GestureEventListeners(Element) {
+            static get template() { return htmlTemplate; }
+            static get properties() {
+                return {
+                    files: { type:Array, value:[], notify:true}               
+                }
+            }
+
+            _toJSON() {
+                return JSON.stringify(this.user);
+            }
+            signout(){
+                this.$.auth.signout();
+            }
+            signin(){
+                this.$.auth.signInAnonymously();
+            }
+
+            upload(e){
+                console.log('uploading...');
+                this.name = this.$.uploader.files[0].name;
+                this.file = this.$.uploader.files[0];
+            }
+
+            addFile(){
+                this.push('files', {file:this.url});
+            }
+        }
+
+        customElements.define('my-app', MyApp);
+        </script>
+        
+
+        <script type="module" src="../ico-app.js"></script>
+        <script type="module" src="../ico-authentication.js"></script>
+        <script type="module" src="../ico-storage-item.js"></script>
+        <script type="module" src="../ico-grid.js"></script>
+    </body>
+</html>
