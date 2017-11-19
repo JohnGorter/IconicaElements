@@ -8,20 +8,20 @@ var template = `
          .gridcontainern { display:flex;flex-flow:wrap;padding:5px;}
          .gridcontainer { position:absolute;display:flex;flex-direction:row;flex-wrap:wrap;}
          .rowcontainer { position:absolute;display:flex;flex-direction:row;flex-wrap:wrap;width:100vw;border:1px solid black;}
-         .containerleft {flex:1;display: grid;grid-template-columns: 50% 25% 25%; grid-template-rows: auto; grid-template-areas: "main second third"  "main fourth fifth";}
-         .containerright {flex:1;display: grid;grid-template-columns: 25% 25% 50%; grid-template-rows: auto; grid-template-areas: "second third main"  "fourth fifth main";}
-         .containermiddle {flex:1;display: grid;grid-template-columns: 25% 50% 25%; grid-template-rows: auto; grid-template-areas: "second main third"  "fourth main fifth";}
+         .containerleft {flex:1;display: grid;grid-template-columns: 50% 25% 25%; grid-template-rows: auto; grid-template-areas: "main second fourth"  "main third fifth";}
+         .containerright {flex:1;display: grid;grid-template-columns: 25% 25% 50%; grid-template-rows: auto; grid-template-areas: "second fourth main"  "third fifth main";}
+         .containermiddle {flex:1;display: grid;grid-template-columns: 25% 50% 25%; grid-template-rows: auto; grid-template-areas: "second main fourth"  "third main fifth";}
         
         .item-row { flex:1;min-width:100vw;min-height:50px;background-color:coral;margin:5px;transition:all 0.2s;}
         .item-row[focus] { z-index:10; outline: 5px solid #71d1a4; background-color:#71d1a4;}
 
         div { }
         .item-n { min-width:50px;min-height:50px;background-color:coral;margin:5px;}
-        .item-b { grid-area: main;}
-        .item-c { grid-area: second;}
-        .item-d { grid-area: third;}
-        .item-e { grid-area: fourth;}
-        .item-f { grid-area: fifth;}
+        .item-b { grid-area: main;max-width:250px;max-height:250px;}
+        .item-c { grid-area: second;max-width:75px;max-height:75px;}
+        .item-d { grid-area: third;max-width:75px;max-height:75px;}
+        .item-e { grid-area: fourth;max-width:75px;max-height:75;}
+        .item-f { grid-area: fifth;max-width:75;max-height:75px;}
         .item   {transition:all 0.2s ease-in-out; background-color:red;min-width:50px;min-height:50px;margin:5px;}
         .item[focus] {z-index:10; outline: 5px solid #71d1a4; background-color:#71d1a4;}
         .zoom { position:absolute;left:0px;top:0px;z-index:10;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
@@ -99,6 +99,11 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
         return ((row * 5) +  sel) == selected; 
     }
 
+    select(index){
+        this.selected = index; 
+        this.selectedobject = this.items[index];
+    }
+    
     _select(e){  
         this.selected = this.items.indexOf(e.model.item); 
         this.selectedObject = e.model.item; 
