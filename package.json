@@ -1,6 +1,6 @@
 {
   "name": "@iconica/iconicaelements",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "description": "Iconica Core Elements",
   "flat": true,
   "main": "index.js",
@@ -20,6 +20,9 @@
   "dependencies": {
     "@polymer/paper-progress": "next",
     "@polymer/paper-button": "next",
+    "@polymer/app-layout": "next",
+    "@polymer/paper-icon-button": "next",
+    "@polymer/paper-input": "next",
     "@polymer/polymer": "next"
   }
 }

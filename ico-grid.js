@@ -143,6 +143,9 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
       console.log("items", this.items);
     }
 
+    render() {
+        this.items = this.items.slice(0);
+    }
     _layoutChange(){
         this.$.container.style.display = this.grid ? "flex":"none";
         this.$.containerflex.style.display = this.flex ? "grid":"none";
