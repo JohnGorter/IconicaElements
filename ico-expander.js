@@ -2,7 +2,6 @@ import '/node_modules/@polymer/polymer/polymer.js'
 import { Element as PolymerElement } from '/node_modules/@polymer/polymer/polymer-element.js'
 import { GestureEventListeners } from '/node_modules/@polymer/polymer/lib/mixins/gesture-event-listeners.js'
 
-
 const htmlTemplate = `
     <style>
      #container { min-width:100vw;min-height:600px;}

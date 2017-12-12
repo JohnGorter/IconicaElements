@@ -16,13 +16,14 @@
 
         output:
         <video id="v" width="100" height="100" controls autoplay></video>
+        <img id="i" />
           
         <script type="module" src="../ico-recorder.js"></script>
         <script>
             var recorder = document.querySelector("#r");
             recorder.addEventListener("recording-complete", () => {
                 document.querySelector("#v").src = recorder.video;
-
+                document.querySelector("#i").src = recorder.thumbs[0];
             });
         </script>
     </body>
