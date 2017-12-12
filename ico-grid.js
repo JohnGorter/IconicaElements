@@ -101,7 +101,7 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
 
     select(index){
         this.selected = index; 
-        this.selectedobject = this.items[index];
+        this.selectedObject = this.items[index];
     }
     
     _select(e){  
