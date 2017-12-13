@@ -28,11 +28,11 @@ export class IcoExpander extends GestureEventListeners(PolymerElement){
     connectedCallback(){
         super.connectedCallback();
         this.addEventListener("pointerdown", (e) => {
-            console.log('down', e);
+         //   console.log('down', e);
             this.shouldscroll = true;
         });
         this.addEventListener("pointerup", (e) => {
-            console.log('up', e);
+         //   console.log('up', e);
             this.shouldscroll = false;
         });
         this.addEventListener("pointermove", (e) => {

@@ -87,7 +87,6 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
         template = template.replace(/{_{/g, "${");
         template = template.replace(/}_}/g, "}");
         var result = eval(template); 
-        console.log("result", result);
         return result;
     }
 
@@ -140,7 +139,7 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
     }
     _renderGrid(){
       //  this._layoutChange();
-      console.log("items", this.items);
+    //  console.log("items", this.items);
     }
 
     render() {
