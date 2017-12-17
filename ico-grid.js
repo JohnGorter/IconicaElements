@@ -120,12 +120,13 @@ export class IcoGrid extends GestureEventListeners(PolymerElement) {
     }
     _getItemsForRow(row, items){
         this.rowitems = [];
-        for (var i = row * 5; i < this.items.length && i < ((row * 5) + 5); i++)
-            this.rowitems.push(this.items[i]);
+        if (this.items)
+            for (var i = row * 5; i < this.items.length && i < ((row * 5) + 5); i++)
+                this.rowitems.push(this.items[i]);
         return this.rowitems;
     }
     _getRows(){
-        if (this.flex) {
+        if (this.flex && this.items) {
             this.rows = [];
             for (var i=0; i < this.items.length; i++) this.rows.push(i);
             return this.rows;
