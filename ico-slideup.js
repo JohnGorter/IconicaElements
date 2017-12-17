@@ -56,18 +56,18 @@ export class IcoSlideUpContainer extends GestureEventListeners(PolymerElement){
     }
 
     correctSwipe(){
-        console.log("toggle");
+       // console.log("toggle");
         this.toggle();
     }
 
     debounce(f, t){
         if (!this.inprogress){
             this.inprogress = true;
-            console.log('inprogress true;')
+         //   console.log('inprogress true;')
             
             f.bind(this)();
             setTimeout(() => { 
-                console.log('inprogress false;')
+            //    console.log('inprogress false;')
                 this.inprogress = false;
             }, t); 
         }
@@ -83,7 +83,7 @@ export class IcoSlideUpContainer extends GestureEventListeners(PolymerElement){
     }
 
     toggle(){
-        console.log('toggling');
+      //  console.log('toggling');
         if (this.state == "up"){
             this.$.slideupcontainer.style.top = (this.$.container.clientHeight - 44) + 'px';
             this.$.header.classList.remove("up");

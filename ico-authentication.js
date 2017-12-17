@@ -32,7 +32,7 @@ export class IcoAuthentication extends Element {
         // The signed-in user info.
         this.user = result.user;
         }).catch(function(error) {
-            console.log("error", error);
+        //    console.log("error", error);
         });
     }
 
@@ -45,7 +45,7 @@ export class IcoAuthentication extends Element {
         firebase.auth().signInAnonymously().then((user) => {
             this.user = user;
         }).catch(function(error) {
-           console.log("error", error);
+         //  console.log("error", error);
           });
     }
 
@@ -59,7 +59,7 @@ export class IcoAuthentication extends Element {
                     .then(function (confirmationResult) {
                         window.confirmationResult = confirmationResult;
                     }).catch(function (error) {
-                        console.log('error', error);
+                     //   console.log('error', error);
                     });
             }
         });
@@ -73,7 +73,7 @@ export class IcoAuthentication extends Element {
             this.user = result.user;
             cb();
         }).catch(function (error) {
-            console.log('error', error);
+         //   console.log('error', error);
         });
     }
 }

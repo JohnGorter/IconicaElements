@@ -12,13 +12,23 @@ const template = `
         .ball[selected] { width:11px;height:11px;background-color:white;}
         #progressballs[hidden] { display:none}
         #progressbar[hidden] { display:none}
+        #headercontainer { width:100vw;}
         #toolbarcontainer { width:100vw;}
         #progresscontainer { width:100vw;}
         paper-progress {width:100vw;--paper-progress-height:50px;}
         paper-progress.large {width:100vw;--paper-progress-height:100px;}
         paper-progress.small {width:100vw;--paper-progress-height:10px;}
+        #headercontainer { @apply(--wizard-header-mixin);}
+        #headertitle { @apply(--wizard-headertitlw-mixin);}
+        #headersubtitle { @apply(--wizard-headersubtitle-mixin);}
     </style>
     <div id="container">
+        <template is="dom-if" if="{{title}}">
+            <div id="headercontainer"> 
+                <div id="headertitle">{{title}}</div>
+                <div id="headersubtitle">{{subtitle}}</div>
+            </div>
+        </template>
         <div id="content" hidden><slot></slot></div>
         <div id="toolbarcontainer">
             <slot id="toolbar" name="toolbar"></slot>
@@ -153,6 +163,8 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         }
         if (this.step >= 0 && this.step < this.pages.length) {
             var selectedPage =  this.querySelector("*[step" + this.step + "]");
+            this.title = selectedPage.getAttribute("title") || "";
+            this.subtitle = selectedPage.getAttribute("subtitle") || "";
             selectedPage.hidden = false;
             selectedPage.dispatchEvent(new CustomEvent("open", { detail:command}));
             var balls = this.$.progressballs.querySelectorAll(".ball");
