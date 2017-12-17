@@ -13,7 +13,8 @@ const template = `
         #progressballs[hidden] { display:none}
         #progressbar[hidden] { display:none}
         #headercontainer { width:100vw;}
-        #toolbarcontainer { width:100vw;}
+        #toolbarcontainer { position:relative;bottom:0vh;width:100vw;transition:bottom 0.45s ease-in-out;}
+        #toolbarcontainer.hidetoolbar { bottom:-50vh;width:100vw;background-color:pink}
         #progresscontainer { width:100vw;}
         paper-progress {width:100vw;--paper-progress-height:50px;}
         paper-progress.large {width:100vw;--paper-progress-height:100px;}
@@ -52,6 +53,7 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
             progresstext: { type:Boolean, value:false},
             progressbar: { type:Boolean, value:false},
             swipeable: { type:Boolean, value:false},
+            hidetoolbar: { type:Boolean, value:false, reflectToAttribute:true, observer:'_changeTBClass'},
             progressbarStyle: { type:String, value:"normal", observer:'_changePBClass'},
         };
     }
@@ -105,8 +107,7 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         this.totalsteps = this.pages.length;
         this.$.content.hidden = false;
         this.step = 0;
-        if (this.nextbutton)        
-            this.previousTitle = this.nextbutton.innerText;
+        
         if (this.previousbutton && !this.carrousel)    
             this.previousbutton.hidden = true;
         this.selectPage('next');
@@ -114,6 +115,13 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
 
     _changePBClass(){
         return this.progressbarStyle == "normal" ? "": this.progressbarStyle == "large"  ? "large" : "small";
+    }
+
+    _changeTBClass(){
+        if (this.hidetoolbar)
+            this.$.toolbarcontainer.classList.add("hidetoolbar");
+        else 
+            this.$.toolbarcontainer.classList.remove("hidetoolbar");
     }
 
     _getProgress(step, totalsteps){
@@ -127,7 +135,7 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         if (!this.carrousel) {
             if (this.step < 1) this.step = 0;
             this.nextbutton.hidden = (this.step == (this.pages.length-1));
-            this.nextbutton.innerText = this.previousTitle;
+           // this.nextbutton.innerText = this.previousTitle;
             this.previousbutton.hidden = (this.step == 0);
         } else {
             if (this.step < 0) this.step = this.pages.length-1;
@@ -137,14 +145,15 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
 
     nextPage(){
         if (this.step == (this.pages.length-1)) this.dispatchEvent(new CustomEvent("complete"));
+       // this.previousTitle = this.nextbutton.innerText;
         this.step++; 
         if (!this.carrousel) {
             if (this.step >= this.pages.length) this.step = this.pages.length-1;
             this.nextbutton.hidden = (this.step == (this.pages.length-1) && !this.showfinish);
             if (this.showfinish && this.step == (this.pages.length-1)) {
-                this.nextbutton.innerText = this.step == (this.pages.length-1) ? 'Finish' : this.previousTitle;
+               // this.nextbutton.innerText = this.step == (this.pages.length-1) ? 'Finish' : this.nextbutton.innerText;//this.previousTitle;
             } else {
-                this.nextbutton.innerText = this.previousTitle;
+              //  this.nextbutton.innerText = this.nextbutton.innerText;//   this.previousTitle;
             }
             this.previousbutton.hidden = (this.step == 0);
            

@@ -35,6 +35,9 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
         };
     }
 
+    constructor(){
+        super(); 
+    }
     connectedCallback(){
         super.connectedCallback(); 
         this.currentcounter = this.counter;
@@ -42,12 +45,14 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
 
     init(autostart){
         this.$.counter.hidden = true;
+        this.currentcounter = this.counter;
         var hdConstraints = { audio:true,  video: true };
         this.$.video.src = '';
         this.$.video.hidden = true;
         navigator.mediaDevices.getUserMedia(hdConstraints).then((stream)=>{
             this.stream = stream;
             this.$.preview.srcObject = stream;
+            this.$.preview.hidden = false;
             this.$.preview.play(); 
             if (autostart) this.start();
         });
@@ -70,16 +75,17 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
     }
 
     start(){
+        this.thumbs = [];
         this.$.counter.hidden = false;
         this.$.video.hidden = true;
-        this.$.preview.hidden = false;
         this.currentcounter = this.counter;
-        var i = setInterval(()=>{
+        var interval = setInterval(()=>{
             this.currentcounter = this.currentcounter - 1;
             if (this.currentcounter == 0) {
                 this.$.counter.hidden = true;
+                this.currentcounter = this.counter;
                 this.startRecording();
-                clearInterval(i);
+                clearInterval(interval);
             } 
         }, 1000);
     }
