@@ -13,8 +13,8 @@ const template = `
         #progressballs[hidden] { display:none}
         #progressbar[hidden] { display:none}
         #headercontainer { width:100vw;}
-        #toolbarcontainer { position:relative;bottom:0vh;width:100vw;transition:bottom .65s eas-in-out;}
-        #toolbarcontainer.hidetoolbar { bottom:-50vh;width:100vw;}
+        :host > #toolbarcontainer { position:relative;bottom:0vh;width:100vw;transition:bottom .65s eas-in-out;}
+        :host.hidetoolbar > #toolbarcontainer { bottom:-50vh;width:100vw;}
         #progresscontainer { width:100vw;}
         paper-progress {width:100vw;--paper-progress-height:50px;}
         paper-progress.large {width:100vw;--paper-progress-height:100px;}
