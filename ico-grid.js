@@ -6,7 +6,7 @@ var template = `
     <style>
          #nmaincontainer { position:relative;min-height:400px;overflow:scroll;}
          .gridcontainern { display:flex;flex-flow:wrap;padding:5px;margin-top:5px;}
-         .gridcontainer { position:absolute;display:flex;flex-direction:row;flex-wrap:wrap;margin-top:5px;}
+         .gridcontainer { position:absolute;display:flex;flex-direction:row;justify-content:space-around;flex-wrap:wrap;margin-top:5px;}
          .rowcontainer { position:absolute;display:flex;flex-direction:row;flex-wrap:wrap;width:100vw;border:1px solid black;margin-top:5px;}
          .containerleft {flex:1;display: grid;grid-template-columns: 50% 25% 25%; grid-template-rows: auto; grid-template-areas: "main second fourth"  "main third fifth";}
          .containerright {flex:1;display: grid;grid-template-columns: 25% 25% 50%; grid-template-rows: auto; grid-template-areas: "second fourth main"  "third fifth main";}
@@ -30,19 +30,19 @@ var template = `
         <div id="containerflex" class="gridcontainern">
             <template is="dom-repeat" items="{{_getRows(items.*)}}" as="row">
                 <div class$="{{_getRandomLayout(row)}}">
-                    <template is="dom-repeat" items="{{_getItemsForRow(row, items.*)}}">
+                    <template is="dom-repeat" items="{{_getItemsForRow(row, items.*)}}" initial-count="20">
                         <div class$="{{_getClassForIndex(index)}}" on-tap="_select" focus$="{{_focus(row, index, selected)}}"><ico-html html="{{_instTemplate(item)}}"></ico-html> </div> </div>
                     </template>
                 </div>
             </template>
         </div>
         <div id="container" class="gridcontainer">
-                <template is="dom-repeat" items="{{items}}">
+                <template is="dom-repeat" items="{{items}}" initial-count="20">
                     <div class$="{{_getClassForIndex(index)}}" focus$="{{_focus(0, index, selected)}}" on-tap="_select">  <ico-html html="{{_instTemplate(item)}}"></ico-html> </div></div>
                 </template>
         </div>
         <div id="containerrow" class="rowcontainer">
-            <template is="dom-repeat" items="{{items}}">
+            <template is="dom-repeat" items="{{items}}" initial-count="20">
               <div class$="{{_getClassForIndex(index)}}" focus$="{{_focus(0, index, selected)}}" on-tap="_select"> 
                 <ico-html html="{{_instTemplate(item)}}"></ico-html>
                </div>

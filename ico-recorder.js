@@ -103,14 +103,14 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
         this.playing = true;
         this.completed = false;
         var mediaRecorder = new MediaStreamRecorder(this.stream);
-        this.$.canvas.width = this.$.preview.videoWidth / 3;
-        this.$.canvas.height = this.$.preview.videoHeight / 3;
+        this.$.canvas.width = this.$.preview.videoWidth / 2;
+        this.$.canvas.height = this.$.preview.videoHeight / 2;
         mediaRecorder.stream = this.stream;
         this.interval = setInterval(()=>{
             var seconds = Date.now() - this.starttime;
             this.duration = "00:0" + Math.round(seconds / 1000);
             if (this.thumbs.length < 3){
-                this.$.canvas.getContext("2d").drawImage(this.$.preview, 0, 0, this.$.preview.videoWidth / 3, this.$.preview.videoHeight / 3);
+                this.$.canvas.getContext("2d").drawImage(this.$.preview, 0, 0, this.$.preview.videoWidth / 2, this.$.preview.videoHeight / 2);
                 this.thumbs.push(this.$.canvas.toDataURL("image/png"));
             }
             if (this.showprogess) this.$.progressbar.value = timer--;
@@ -135,7 +135,7 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
                 .then(blob => this.videoblob = blob);
             }
         }
-        mediaRecorder.start((this.recordingtime + 1) * 1000);
+        mediaRecorder.start((this.recordingtime + 0.5) * 1000);
     }
 }
 
