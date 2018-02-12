@@ -15,7 +15,7 @@ var template = `
     </style>
     <paper-progress id="progressbar" style="visibility:hidden" value="99" max="{{recordingtime}}" min="0" secondary-progress="{{recordingtime}}"></paper-progress>
     <div id="container" on-tap="init">
-        <span id="counter">{{currentcounter}}</span>
+        <span id="counter" hidden>{{currentcounter}}</span>
         <video id="preview" autoplay playsinline muted></video>
         <video id="video" hidden controls></video>
     </div>
@@ -31,7 +31,8 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
             counter: { type:Number, value:3},
             duration: { type:String, value:''},
             recordingtime: { type:Number, value:7, notify:true},
-            thumbs: { type:Array, value:[], notify:true}
+            thumbs: { type:Array, value:[], notify:true},
+            showprogess: { type:Boolean, value:false}
         };
     }
 
@@ -64,7 +65,7 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
         this.$.counter.hidden = true;
         this.$.video.src = '';
         this.$.video.hidden = true;
-        this.$.progressbar.style.visibility = 'hidden';
+        if (this.showprogess) this.$.progressbar.style.visibility = 'hidden';
         this.dispatchEvent(new CustomEvent('stop', {}));
     }
 
@@ -76,40 +77,44 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
 
     start(){
         this.thumbs = [];
-        this.$.counter.hidden = false;
         this.$.video.hidden = true;
         this.currentcounter = this.counter;
-        var interval = setInterval(()=>{
-            this.currentcounter = this.currentcounter - 1;
-            if (this.currentcounter == 0) {
-                this.$.counter.hidden = true;
-                this.currentcounter = this.counter;
-                this.startRecording();
-                clearInterval(interval);
-            } 
-        }, 1000);
+        if (this.currentcounter > 0) {
+            this.$.counter.hidden = false;
+            var interval = setInterval(()=>{
+                this.currentcounter = this.currentcounter - 1;
+                if (this.currentcounter == 0) {
+                    this.$.counter.hidden = true;
+                    this.currentcounter = this.counter;
+                    clearInterval(interval);
+                    this.startRecording();
+                } 
+            }, 1000);
+        } else {
+            this.startRecording();
+        }
     }
 
     startRecording(){
         var timer = this.recordingtime;
         this.starttime = Date.now();
         this.duration = "00:00";
-        this.$.progressbar.style.visibility = 'visible';
+        if (this.showprogess) this.$.progressbar.style.visibility = 'visible';
         this.playing = true;
         this.completed = false;
         var mediaRecorder = new MediaStreamRecorder(this.stream);
-        this.$.canvas.width = this.$.preview.videoWidth / 3;
-        this.$.canvas.height = this.$.preview.videoHeight / 3;
+        this.$.canvas.width = this.$.preview.videoWidth / 2;
+        this.$.canvas.height = this.$.preview.videoHeight / 2;
         mediaRecorder.stream = this.stream;
         this.interval = setInterval(()=>{
             var seconds = Date.now() - this.starttime;
             this.duration = "00:0" + Math.round(seconds / 1000);
             if (this.thumbs.length < 3){
-                this.$.canvas.getContext("2d").drawImage(this.$.preview, 0, 0, this.$.preview.videoWidth / 3, this.$.preview.videoHeight / 3);
+                this.$.canvas.getContext("2d").drawImage(this.$.preview, 0, 0, this.$.preview.videoWidth / 2, this.$.preview.videoHeight / 2);
                 this.thumbs.push(this.$.canvas.toDataURL("image/png"));
             }
-            this.$.progressbar.value = timer--;
-        }, 1000);
+            if (this.showprogess) this.$.progressbar.value = timer--;
+        }, 100);
 
         mediaRecorder.ondataavailable = (blob) => {
             if (!this.completed){
@@ -130,7 +135,7 @@ export class IconicaVideoRecorder extends GestureEventListeners(PolymerElement) 
                 .then(blob => this.videoblob = blob);
             }
         }
-        mediaRecorder.start((this.recordingtime + 1) * 1000);
+        mediaRecorder.start((this.recordingtime + 0.5) * 1000);
     }
 }
 
