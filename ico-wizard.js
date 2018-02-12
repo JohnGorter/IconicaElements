@@ -1,16 +1,20 @@
 import '/node_modules/@polymer/polymer/polymer.js'
 import { Element as PolymerElement } from '/node_modules/@polymer/polymer/polymer-element.js'
+import { LegacyElementMixin } from '/node_modules/@polymer/polymer/lib/legacy/legacy-element-mixin.js'
 import { GestureEventListeners} from '/node_modules/@polymer/polymer/lib/mixins/gesture-event-listeners.js'
 import '/node_modules/@polymer/paper-progress/paper-progress.js'
 
 const template = `
     <style>
-        #content { z-index:10;touch-action:pan-right;background-color:black;width:100vw;}
-        #toolbarcontainer { z-index:30;}
-        #progressballs { min-height:20px;background-color:black;display:flex;justify-items:center;justify-content:center;align-items:center;}
+        #content { z-index:10;touch-action:pan-right;background-color:transparent;width:100vw;}
+        #toolbarcontainer { z-index:30;display:flex;justify-content:center;}
+        #progressballs { bottom:25px;position:fixed;min-height:20px;background-color:var(--main-background-color,red);display:flex;justify-items:center;justify-content:center;align-items:center;width:100vw;}
+        @media screen and (orientation:landscape) {
+            #progressballs { bottom:10px;position:fixed;min-height:20px;background-color:var(--main-background-color,red);display:flex;justify-items:center;justify-content:center;align-items:center;width:100vw;}
+        }
         .ball { width:8px;height:8px;margin:2px;border-radius:50%;background-color:silver;transition:all 0.3s ease-in-out}
         .ball[selected] { width:11px;height:11px;background-color:white;}
-        #progressballs[hidden] { display:none}
+        #progressballs[hidden] { display:none;}
         #progressbar[hidden] { display:none}
         #headercontainer { width:100vw;}
         #toolbarcontainer { position:relative;bottom:0vh;width:100vw;transition:bottom 0.45s ease-in-out;}
@@ -20,17 +24,18 @@ const template = `
         paper-progress.large {width:100vw;--paper-progress-height:100px;}
         paper-progress.small {width:100vw;--paper-progress-height:10px;}
         #headercontainer { @apply(--wizard-header-mixin);}
-        #headertitle { @apply(--wizard-headertitlw-mixin);}
+        #headertitle { @apply(--wizard-headertitle-mixin);}
         #headersubtitle { @apply(--wizard-headersubtitle-mixin);}
     </style>
     <div id="container">
         <template is="dom-if" if="{{title}}">
             <div id="headercontainer"> 
-                <div id="headertitle">{{title}}</div>
+                <h2 id="headertitle">{{title}}</h2>
                 <div id="headersubtitle">{{subtitle}}</div>
             </div>
         </template>
         <div id="content" hidden><slot></slot></div>
+        <div id="nocontent" hidden><slot name="nocontent"></slot></div>
         <div id="toolbarcontainer">
             <slot id="toolbar" name="toolbar"></slot>
         </div>
@@ -43,10 +48,10 @@ const template = `
     </div>
 `;
 
-export class IcoWizard extends GestureEventListeners(PolymerElement) {
+export class IcoWizard extends LegacyElementMixin(PolymerElement) {
     static get properties() {
         return { 
-            step: { type:Number, value:-1, notify:true, reflectToAttribute:true},
+            step: { type:Number, value:-1, notify:true, reflectToAttribute:true, observer:'_selectedStepChanged'},
             progressballs: { type:Boolean, value:false},
             showfinish: { type:Boolean, value:false},
             carrousel: { type:Boolean, value:false},
@@ -69,14 +74,42 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         }
     }
 
+    ready() {
+        super.ready();
+        // let repeater finish...
+        this.async(() => {
+            if (this.swipeable){
+                this.listen(this, 'track', '_track');
+            }
+        });
+    }
+    _track(e){
+        if (e.detail.state == 'start'){
+            this.swiping = true;
+        }
+        if (e.detail.state == 'end'){
+            if (e.detail.dx > 20 && this.swiping) this.debounce(() => { this.previousPage()}, 500);
+            if (e.detail.dx < -20 && this.swiping) this.debounce(() => { this.nextPage()}, 500);
+            this.swiping = false;
+        }
+    }
+
     connectedCallback(){
         super.connectedCallback();
 
-        if (this.swipeable){
+        if (this.swipeable && false){
+            
             // listen for swipes
+            this.addEventListener("pointerdown", (e) => {
+                this.swiping = true;
+            });
+            this.addEventListener("pointerup", (e) => {
+                this.swiping = false;
+            });
+
             this.addEventListener("pointermove", (e) => {
-                if (e.movementX > 20) this.debounce(() => { this.previousPage()}, 500);
-                if (e.movementX < -20) this.debounce(() => { this.nextPage()}, 500);
+                if (e.movementX > 20 && this.swiping) this.debounce(() => { this.previousPage()}, 500);
+                if (e.movementX < -20 && this.swiping) this.debounce(() => { this.nextPage()}, 500);
             });
           
         }
@@ -92,9 +125,19 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
             }
         }
 
+       this._setupUI(0);
+    }
+    
+    _selectedStepChanged() {
+        if (this.pages && this.pages.length > this.step)
+            this.selectPage('set');
+    }
+
+    _setupUI(step) {
+        this.title = "";
         this.pages = Array();
         for(let i = 0; i < this.children.length; i++){
-            if (this.children[i].assignedSlot.name == ""){
+            if (this.children[i].assignedSlot.name == "" && this.children[i].getAttribute("step")){
                 this.children[i].classList.add("page");
                 this.children[i].hidden = true;
                 this.pages.push(this.children[i]);
@@ -105,12 +148,14 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         for (let j = 0; j < this.pages.length; j++)
             this.$.progressballs.innerHTML += `<div class='ball'></div>`;
         this.totalsteps = this.pages.length;
-        this.$.content.hidden = false;
-        this.step = 0;
+        this.$.content.hidden = !this.totalsteps;
+        this.$.nocontent.hidden = this.totalsteps;
+
+        this.step = step;
         
         if (this.previousbutton && !this.carrousel)    
-            this.previousbutton.hidden = true;
-        this.selectPage('next');
+            this.previousbutton.hidden = true;    
+        if (this.totalsteps) this.selectPage('next');
     }
 
     _changePBClass(){
@@ -134,9 +179,13 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         this.step--;
         if (!this.carrousel) {
             if (this.step < 1) this.step = 0;
-            this.nextbutton.hidden = (this.step == (this.pages.length-1));
-           // this.nextbutton.innerText = this.previousTitle;
-            this.previousbutton.hidden = (this.step == 0);
+            if (this.nextbutton) {
+                this.nextbutton.hidden = (this.step == (this.pages.length-1));
+            }
+            if(this.previousbutton){
+                // this.nextbutton.innerText = this.previousTitle;
+                this.previousbutton.hidden = (this.step == 0);
+            }
         } else {
             if (this.step < 0) this.step = this.pages.length-1;
         }
@@ -149,13 +198,17 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
         this.step++; 
         if (!this.carrousel) {
             if (this.step >= this.pages.length) this.step = this.pages.length-1;
-            this.nextbutton.hidden = (this.step == (this.pages.length-1) && !this.showfinish);
+            if (this.nextbutton) {
+                this.nextbutton.hidden = (this.step == (this.pages.length-1) && !this.showfinish);
+            }
             if (this.showfinish && this.step == (this.pages.length-1)) {
                // this.nextbutton.innerText = this.step == (this.pages.length-1) ? 'Finish' : this.nextbutton.innerText;//this.previousTitle;
             } else {
               //  this.nextbutton.innerText = this.nextbutton.innerText;//   this.previousTitle;
             }
-            this.previousbutton.hidden = (this.step == 0);
+            if (this.previousbutton) {
+                this.previousbutton.hidden = (this.step == 0);
+            }
            
         } else {
             this.step = this.step % this.pages.length;
@@ -171,7 +224,7 @@ export class IcoWizard extends GestureEventListeners(PolymerElement) {
             }
         }
         if (this.step >= 0 && this.step < this.pages.length) {
-            var selectedPage =  this.querySelector("*[step" + this.step + "]");
+            var selectedPage =  this.querySelector("*[step='" + this.step + "']");
             this.title = selectedPage.getAttribute("title") || "";
             this.subtitle = selectedPage.getAttribute("subtitle") || "";
             selectedPage.hidden = false;
